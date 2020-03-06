@@ -1,0 +1,19 @@
+/* 
+@darkBackground: #000000;
+@lightBackground: #ffffff;
+*/
+
+html {
+  width: 100%;
+}
+
+@media (prefers-color-scheme: dark) {
+  .day.dark {
+    background: #333;
+    color: #ffffff;
+  }
+  .night.dark {
+    background: #000000;
+    color: #ddd;
+  }
+}
