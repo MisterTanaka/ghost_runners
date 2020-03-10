@@ -7,12 +7,7 @@
       <div class="2-md">
         <div class="form-group">
           <label for="table_name">Nom de la table</label>
-          <input
-            type="text"
-            id="table_name"
-            v-model="table_name"
-            :disabled="is_generated"
-          />
+          <input type="text" id="table_name" v-model="table_name" :disabled="is_generated" />
         </div>
       </div>
       <div class="2-md">
@@ -39,26 +34,16 @@
       </div>
     </div>
     <div class="row">
-      <button
-        v-on:click="setupTable()"
-        class="btn btn-success"
-        v-show="!is_generated"
-      >
-        Créer
-      </button>
+      <button v-on:click="setupTable()" class="btn btn-success" v-show="!is_generated">Créer</button>
     </div>
     <hr />
     <div class="row generated" v-if="is_generated === true">
       <div v-for="n in ColumnsNumber" v-bind:key="n" :class="oddClass(n)">
         <div class="form-group">
           <label for="columns_number">{{ n }} colonnes</label>
-          <input
-            type="text"
-            :id="generateID(n, 'columns')"
-            v-model="columns_value[n - 1]"
-          />
+          <input type="text" :id="generateID(n, 'columns')" v-model="columns_value[n - 1]" />
           <select v-model="columns_type[n - 1]" :id="generateID(n, 'select')">
-            <option disabled value="">Select one</option>
+            <option disabled value>Select one</option>
             <option>Number</option>
             <option>String</option>
           </select>
@@ -70,16 +55,8 @@
         v-show="is_generated"
         v-on:click="generateColumns()"
         class="btn btn-success spacing"
-      >
-        Générer
-      </button>
-      <button
-        v-show="is_generated"
-        v-on:click="cancelTable()"
-        class="btn btn-danger"
-      >
-        Annuler
-      </button>
+      >Générer</button>
+      <button v-show="is_generated" v-on:click="cancelTable()" class="btn btn-danger">Annuler</button>
     </div>
   </div>
 </template>
@@ -121,7 +98,7 @@ export default {
       this.is_generated = !this.is_generated;
     },
 
-    generateColumns() {
+    async generateColumns() {
       let columns = [];
       for (let i = 0; i < this.columns_number; i++) {
         columns[i] = {
@@ -131,17 +108,23 @@ export default {
       }
       this.$nuxt.$loading.start();
       // dispatch de l'event pour créer une table avec les colonnes
-      Axios.post(`http://localhost:3000/api/tables/`, {
+
+      await this.$store.dispatch('INSERT_TABLE', {
         name: this.table_name,
         description: this.table_description,
         columns: columns,
-      }).then(res => {
-        this.$nuxt.$loading.finish();
-        this.$toast.show('The table was created successfully...', {
-          duration: 2000,
-        });
-        console.log('res', res);
       });
+
+      const msg = this.$store.state.notifications[
+        this.$store.state.notifications.length - 1
+      ];
+
+      this.$toast.show(msg, {
+        duration: 2000,
+      });
+
+      await this.$store.commit('remove_notification');
+      this.$nuxt.$loading.finish();
     },
 
     generateID(id, column_name) {

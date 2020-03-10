@@ -1,17 +1,22 @@
 <template>
-  <div class="header">
-    <h1>Random Table generator</h1>
+  <div class="container">
+    <div class="header">
+      <h1>Random Table generator</h1>
+    </div>
+    <div class="listing">
+      <div class="list"></div>
+    </div>
   </div>
 </template>
 
 <script>
-import Logo from '~/components/Logo.vue'
+import Logo from '~/components/Logo.vue';
 
 export default {
   components: {
-    Logo
-  }
-}
+    Logo,
+  },
+};
 </script>
 
 <style>

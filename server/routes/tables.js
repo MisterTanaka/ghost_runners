@@ -36,7 +36,12 @@ router.post('/', async (req, res) => {
       throw new Error(errors.array());
     }
     const newTable = await table.save();
-    res.status(201).json(newTable);
+    res
+      .status(201)
+      .json({
+        table: newTable,
+        message: 'The new table have been generated with success!',
+      });
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
