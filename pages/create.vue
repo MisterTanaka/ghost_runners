@@ -7,13 +7,34 @@
       <div class="2-md">
         <div class="form-group">
           <label for="table_name">Nom de la table</label>
-          <input type="text" id="table_name" v-model="table_name" />
+          <input
+            type="text"
+            id="table_name"
+            v-model="table_name"
+            :disabled="is_generated"
+          />
+        </div>
+      </div>
+      <div class="2-md">
+        <div class="form-group">
+          <label for="table_description">Description de la table</label>
+          <input
+            type="text"
+            id="table_description"
+            v-model="table_description"
+            :disabled="is_generated"
+          />
         </div>
       </div>
       <div class="2-md">
         <div class="form-group">
           <label for="columns_number">Nombre de colonnes</label>
-          <input type="text" id="columns_number" v-model="columns_number" />
+          <input
+            type="number"
+            id="columns_number"
+            v-model="columns_number"
+            :disabled="is_generated"
+          />
         </div>
       </div>
     </div>
@@ -27,11 +48,20 @@
       </button>
     </div>
     <hr />
-    <div class="row" v-if="is_generated === true">
-      <div v-for="n in columns_number" v-bind:key="n" :class="oddClass(n)">
+    <div class="row generated" v-if="is_generated === true">
+      <div v-for="n in ColumnsNumber" v-bind:key="n" :class="oddClass(n)">
         <div class="form-group">
           <label for="columns_number">{{ n }} colonnes</label>
-          <input type="text" :id="generateID(n, 'columns')" />
+          <input
+            type="text"
+            :id="generateID(n, 'columns')"
+            v-model="columns_value[n - 1]"
+          />
+          <select v-model="columns_type[n - 1]" :id="generateID(n, 'select')">
+            <option disabled value="">Select one</option>
+            <option>Number</option>
+            <option>String</option>
+          </select>
         </div>
       </div>
     </div>
@@ -39,7 +69,7 @@
       <button
         v-show="is_generated"
         v-on:click="generateColumns()"
-        class="btn btn-success"
+        class="btn btn-success spacing"
       >
         Générer
       </button>
@@ -55,13 +85,31 @@
 </template>
 
 <script>
+import Axios from 'axios';
+import Vue from 'vue';
+
 export default {
   data() {
     return {
       table_name: '',
-      columns_number: 3,
+      columns_number: 0,
+      table_description: '',
+      columns: [],
+      columns_value: [],
+      columns_type: [],
       is_generated: false,
     };
+  },
+
+  computed: {
+    ColumnsNumber() {
+      this.columns = [];
+      this.columns_value = [];
+      for (let i = 0; i < this.columns_number; i++) {
+        this.columns[i] = i + 1;
+      }
+      return this.columns;
+    },
   },
 
   methods: {
@@ -74,10 +122,26 @@ export default {
     },
 
     generateColumns() {
-      // dispatch de l'event pour créer une table avec les colonnes.
-      console.log('table name: ', this.table_name);
-      console.log('columns number: ', this.columns_number);
-      console.log('is generated: ', this.is_generated);
+      let columns = [];
+      for (let i = 0; i < this.columns_number; i++) {
+        columns[i] = {
+          column_name: this.columns_value[i],
+          column_type: this.columns_type[i],
+        };
+      }
+      this.$nuxt.$loading.start();
+      // dispatch de l'event pour créer une table avec les colonnes
+      Axios.post(`http://localhost:3000/api/tables/`, {
+        name: this.table_name,
+        description: this.table_description,
+        columns: columns,
+      }).then(res => {
+        this.$nuxt.$loading.finish();
+        this.$toast.show('The table was created successfully...', {
+          duration: 2000,
+        });
+        console.log('res', res);
+      });
     },
 
     generateID(id, column_name) {
@@ -92,11 +156,24 @@ export default {
 </script>
 
 <style>
-.row div:first-child {
+.row div {
   margin-right: 25px;
 }
 
 .oddInput {
   margin-left: 35px;
+}
+
+.spacing {
+  margin-right: 25px;
+}
+
+.generated .form-group select {
+  width: 15%;
+  padding: 0;
+  vertical-align: top;
+}
+.generated .form-group input {
+  width: 64%;
 }
 </style>
