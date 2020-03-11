@@ -109,21 +109,16 @@ export default {
       this.$nuxt.$loading.start();
       // dispatch de l'event pour créer une table avec les colonnes
 
-      await this.$store.dispatch('INSERT_TABLE', {
+      const res = await this.$store.dispatch('INSERT_TABLE', {
         name: this.table_name,
         description: this.table_description,
         columns: columns,
       });
 
-      const msg = this.$store.state.notifications[
-        this.$store.state.notifications.length - 1
-      ];
-
-      this.$toast.show(msg, {
+      this.$toast.show(res.message, {
         duration: 2000,
       });
 
-      await this.$store.commit('remove_notification');
       this.$nuxt.$loading.finish();
     },
 
