@@ -68,9 +68,13 @@ router.patch('/:id', [
         throw new Error(errors.array());
       }
       const updatedTable = await res.table.save();
-      res.json(updatedTable);
+      res.json({
+        status: 200,
+        updatedTable,
+        message: 'The table have been updated with success!',
+      });
     } catch {
-      res.status(400).json({ message: err.message });
+      res.status(400).json({ status: 500, message: err.message });
     }
   },
 ]);
