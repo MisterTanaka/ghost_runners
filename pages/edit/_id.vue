@@ -22,18 +22,22 @@
       <h2>
         Edit the Table rows
       </h2>
-      <div class="content"></div>
+      <div class="content">
+        <table-rows></table-rows>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import Table from '../../components/Table.vue';
+import TableRows from '../../components/TableRows.vue';
 import { mapGetters } from 'vuex';
 
 export default {
   components: {
     Table,
+    TableRows,
   },
 
   computed: mapGetters({

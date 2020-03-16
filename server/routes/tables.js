@@ -10,6 +10,7 @@ router.get('/', async (req, res) => {
     const tables = await Table.find();
     res.json(tables);
   } catch (err) {
+    console.log(err.message);
     res.status(500).json({ message: err.message });
   }
 });
@@ -42,6 +43,7 @@ router.post('/', async (req, res) => {
       message: 'The new table have been generated with success!',
     });
   } catch (err) {
+    console.log(err.message);
     res.status(400).json({ status: 500, message: err.message });
   }
 });

@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
 const tableSchema = new mongoose.Schema({
   name: {
@@ -29,6 +30,7 @@ const tableSchema = new mongoose.Schema({
     type: String,
     required: false,
   },
+  rows: [{ type: Schema.Types.ObjectId, ref: 'Type' }],
   created: {
     type: Date,
     required: true,

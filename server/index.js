@@ -2,12 +2,15 @@ require('dotenv').config();
 const express = require('express');
 const consola = require('consola');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 const { setupDb } = require('./api/db');
 const { Nuxt, Builder } = require('nuxt');
 
 const app = express();
 
 app.use(bodyParser.json());
+app.use(cors());
+
 // Import and Set Nuxt.js options
 const config = require('../nuxt.config.js');
 config.dev = process.env.NODE_ENV !== 'production';
@@ -24,6 +27,9 @@ async function start() {
   // adding dependencies
   const tableRoutes = require('./routes/tables');
   app.use('/api/tables', tableRoutes);
+
+  const rowRoutes = require('./routes/rows');
+  app.use('/api/rows', rowRoutes);
 
   await nuxt.ready();
   // Build only in dev mode

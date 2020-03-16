@@ -1,7 +1,7 @@
 <template>
   <div class="table">
     <div class="row">
-      <div class="2-md">
+      <div class="col-md-6">
         <div class="form-group">
           <label for="table_name">Nom de la table</label>
           <input
@@ -12,18 +12,17 @@
           />
         </div>
       </div>
-      <div class="2-md">
+      <div class="col-md-6">
         <div class="form-group">
           <label for="table_description">Description de la table</label>
-          <input
-            type="text"
+          <textarea
             id="table_description"
             v-model="table_description"
             :disabled="checkDisableValue"
-          />
+          ></textarea>
         </div>
       </div>
-      <div class="2-md">
+      <div class="col-md-6">
         <div class="form-group">
           <label for="columns_number">Nombre de colonnes</label>
           <input
@@ -47,18 +46,27 @@
     <hr />
     <div class="row generated" v-if="is_generated === true">
       <div v-for="n in ColumnsNumber" v-bind:key="n" :class="oddClass(n)">
-        <div class="form-group">
-          <label for="columns_number">{{ n }} colonnes</label>
-          <input
-            type="text"
-            :id="generateID(n, 'columns')"
-            v-model="columns_value[n - 1]"
-          />
-          <select v-model="columns_type[n - 1]" :id="generateID(n, 'select')">
-            <option disabled value>Select one</option>
-            <option>Number</option>
-            <option>String</option>
-          </select>
+        <div class="col-lg-6">
+          <div class="form-inline">
+            <div class="form-group">
+              <label for="columns_number">{{ n }} colonnes</label>
+              <input
+                type="text"
+                :id="generateID(n, 'columns')"
+                class="form-control"
+                v-model="columns_value[n - 1]"
+              />
+              <select
+                v-model="columns_type[n - 1]"
+                :id="generateID(n, 'select')"
+                class="form-control"
+              >
+                <option disabled value>Select one</option>
+                <option>Number</option>
+                <option>String</option>
+              </select>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -149,7 +157,6 @@ export default {
         };
       }
       this.$nuxt.$loading.start();
-      // dispatch de l'event pour créer une table avec les colonnes
 
       const res = await this.$store.dispatch('INSERT_TABLE', {
         is_new: !this.is_editable,
@@ -178,24 +185,14 @@ export default {
 </script>
 
 <style>
-.row div {
-  margin-right: 25px;
-}
-
 .oddInput {
   margin-left: 35px;
 }
 
-.spacing {
-  margin-right: 25px;
-}
-
 .generated .form-group select {
-  width: 15%;
-  padding: 0;
   vertical-align: top;
 }
 .generated .form-group input {
-  width: 64%;
+  margin: 5px;
 }
 </style>
