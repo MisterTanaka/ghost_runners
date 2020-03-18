@@ -15,6 +15,7 @@
             <b-form-input v-model="data.item[col.key]" v-bind:key="col.key" />
           </template>
         </b-table>
+        {{ row.rows }}
       </div>
       <hr />
       <div class="row">
@@ -55,13 +56,13 @@ export default {
   }),
 
   data() {
-    let row = {};
+    let x = {};
     let cols = [];
     let cRow = _.cloneDeep(this.$store.state.rows);
     let cNewRow = [];
 
     this.table.columns.forEach((col, index) => {
-      row[col.column_name.replace(/ /g, '_').toLowerCase()] = null;
+      x[col.column_name.replace(/ /g, '_').toLowerCase()] = null;
       cols[index] = {
         key: col.column_name.replace(/ /g, '_').toLowerCase(),
         label: col.column_name,
@@ -69,28 +70,17 @@ export default {
       };
     });
 
-    if (cRow) {
-      _.forEach(cRow.rows, (row, i) => {
-        let r = {};
-        Object.keys(row).forEach(function(key, index) {
-          r[key.replace(/ /g, '_').toLowerCase()] = row[key];
-        });
-        cNewRow[i] = r;
-      });
-      cRow.rows = cNewRow;
-    } else {
-      cRow = {
-        rows: [],
-      };
+    if (!cRow.rows) {
+      cRow.rows = { rows: [] };
     }
 
-    console.log(cRow.rows);
+    console.log(cRow);
     return {
       sortBy: cols[0].label,
       sortDesc: false,
-      current_row: row,
+      current_row: x,
       fields: cols,
-      row: cRow,
+      row: cRow.rows,
     };
   },
 
@@ -101,7 +91,7 @@ export default {
       const aRow = _.cloneDeep(this.row.rows);
       aRow.push(this.current_row);
 
-      const res = await this.$store.dispatch('INSERT_ROW', {
+      const res = await this.$store.dispatch('rows/INSERT_ROW', {
         is_new: !this.row || this.row.length === 0,
         tableId: this.table._id,
         rowId: this.row._id || null,
@@ -126,7 +116,7 @@ export default {
     // whenever row changes, this function will run
     row: {
       handler: _.debounce(async function(row) {
-        console.log('row', row);
+        console.log('row vfvfv', row);
         const res = await this.$store.dispatch('INSERT_ROW', {
           is_new: !this.row || this.row.length === 0,
           tableId: this.table._id,
