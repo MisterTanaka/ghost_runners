@@ -153,6 +153,7 @@ export default {
       for (let i = 0; i < this.columns_number; i++) {
         columns[i] = {
           column_name: this.columns_value[i],
+          column_key: this.columns_value[i].replace(/ /g, '_').toLowerCase(),
           column_type: this.columns_type[i],
         };
       }

@@ -23,7 +23,7 @@
         Edit the Table rows
       </h2>
       <div class="content">
-        <table-rows></table-rows>
+        <table-rows :table="t" :row="r"></table-rows>
       </div>
     </div>
   </div>
@@ -42,10 +42,12 @@ export default {
 
   computed: mapGetters({
     t: 'getTable',
+    r: 'rows/getRows',
   }),
 
   async fetch({ store, params }) {
     await store.dispatch('LOAD_TABLES');
+    await store.dispatch('rows/LOAD_ROWS', { tableId: params.id });
     await store.dispatch('LOAD_TABLE', { id: params.id });
   },
 

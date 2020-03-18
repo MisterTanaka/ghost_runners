@@ -15,6 +15,17 @@ router.get('/', async (req, res) => {
   }
 });
 
+router.get('/tableId/:tableId', async (req, res) => {
+  try {
+    const rows = await Row.find({
+      table: req.params.tableId,
+    });
+    res.json(rows);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 // A route to get a random table
 router.get('/:id', [
   getRow,
@@ -27,11 +38,9 @@ router.get('/:id', [
 router.post('/', async (req, res) => {
   const errors = checkRowValidation(req);
   const row = new Row({
-    table: mongoose.Types.ObjectId(req.body.table),
+    table: mongoose.Types.ObjectId(req.body.tableId),
     rows: req.body.rows,
   });
-
-  console.log('rows', row);
 
   try {
     if (!errors.isEmpty()) {
@@ -47,5 +56,30 @@ router.post('/', async (req, res) => {
     res.status(400).json({ status: 500, message: err.message });
   }
 });
+
+router.patch('/:id', [
+  getRow,
+  async (req, res) => {
+    const errors = checkRowValidation(req);
+
+    if (req.body.rows != null) {
+      res.row.rows = req.body.rows;
+    }
+
+    try {
+      if (!errors.isEmpty()) {
+        throw new Error(errors.array());
+      }
+      const updatedRow = await res.row.save();
+      res.json({
+        status: 200,
+        updatedRow,
+        message: 'The rows have been updated with success!',
+      });
+    } catch {
+      res.status(400).json({ status: 500, message: err.message });
+    }
+  },
+]);
 
 module.exports = router;
