@@ -26,10 +26,16 @@ router.get('/:id', [
 // A route to create a random table
 router.post('/', async (req, res) => {
   const errors = checkTableValidation(req);
+  let columns = req.body.columns;
+  columns.unshift({
+    column_key: 'weigth',
+    column_name: 'Weigth',
+    column_type: 'number',
+  });
   const table = new Table({
     name: req.body.name,
     description: req.body.description,
-    columns: req.body.columns,
+    columns: columns,
   });
 
   try {

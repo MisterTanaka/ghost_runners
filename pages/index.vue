@@ -6,11 +6,28 @@
     <div class="listing">
       <div class="item" v-for="table in tables" v-bind:key="table._id">
         <h2>{{ table.name }}</h2>
-        <pre>
-          {{table.description}}
-        </pre>
+        <p>
+          {{ table.description }}
+        </p>
         <div class="right">
-          <nuxt-link :to="generateUrl('/edit', table._id)" class="btn btn-success">Edit</nuxt-link>
+          <ul>
+            <li><nuxt-link
+              :to="generateUrl('/view', table._id)"
+              class="btn btn-primary"
+              >View</nuxt-link
+            >
+            </li>
+            <li>
+              <nuxt-link
+              :to="generateUrl('/edit', table._id)"
+              class="btn btn-success"
+              >Edit</nuxt-link
+            >
+            </li>
+          </ul>
+            
+            
+          </div>
         </div>
       </div>
     </div>
@@ -28,17 +45,14 @@ export default {
 
   computed: mapGetters({
     tables: 'getTables',
+    generateUrl: 'generateStaticUrl',
   }),
 
   async fetch({ store, params }) {
     await store.dispatch('LOAD_TABLES');
   },
 
-  methods: {
-    generateUrl(staticElem, param) {
-      return `${staticElem}/${param}`;
-    },
-  },
+  methods: {},
 };
 </script>
 
@@ -66,11 +80,12 @@ export default {
 }
 
 .right {
-  position: relative;
+  display: block;
+  float:right;
 }
 
-.right a {
-  float: right;
-  margin-top: -75px;
+.right ul li {
+  display: inline-block;
+  list-style-type: none;
 }
 </style>

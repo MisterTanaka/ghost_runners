@@ -11,6 +11,7 @@
 import Axios from 'axios';
 import Vue from 'vue';
 import Table from '../components/Table.vue';
+import { mapGetters } from 'vuex';
 
 export default {
   components: {

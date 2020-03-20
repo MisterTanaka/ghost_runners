@@ -23,6 +23,7 @@ const tableSchema = new mongoose.Schema({
   columns: [
     {
       column_name: { type: String, required: true },
+      column_key: { type: String, required: true },
       column_type: { type: String, required: true },
     },
   ],

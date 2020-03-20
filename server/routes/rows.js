@@ -4,6 +4,7 @@ const Row = require('../models/row');
 const { getTable, getRow } = require('../middlewares/routeMiddleware');
 const { checkRowValidation } = require('../validation/rowValidation');
 const mongoose = require('mongoose');
+const _ = require('lodash');
 
 // A route to get all random table generate.
 router.get('/', async (req, res) => {
@@ -34,12 +35,19 @@ router.get('/:id', [
   },
 ]);
 
-// A route to create a random table
+// A route to create a random row in a table
 router.post('/', async (req, res) => {
   const errors = checkRowValidation(req);
+  let checkedRows = [];
+  _.forEach(req.body.rows, row => {
+    if (row.weigth < 0) {
+      row.weigth = 0;
+    }
+    checkedRows[row];
+  });
   const row = new Row({
     table: mongoose.Types.ObjectId(req.body.tableId),
-    rows: req.body.rows,
+    rows: checkedRows,
   });
 
   try {
@@ -49,7 +57,7 @@ router.post('/', async (req, res) => {
     const newRow = await row.save();
     res.status(201).json({
       rows: newRow,
-      status: 200,
+      status: 201,
       message: 'The new row have been generated with success!',
     });
   } catch (err) {

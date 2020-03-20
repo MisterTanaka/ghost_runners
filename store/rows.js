@@ -55,7 +55,6 @@ export const actions = {
     } else {
       rows = await Axios.get(`${baseUrl}/rows/`);
     }
-
     commit('setRows', rows.data);
     return;
   },

@@ -93,6 +93,7 @@
 import Axios from 'axios';
 import Vue from 'vue';
 import _ from 'lodash';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'Table',
@@ -101,26 +102,30 @@ export default {
 
   data() {
     let ta = _.cloneDeep(this.table);
+
     return {
-      table_name: ta ? ta.name : '',
-      columns_number: ta ? ta.columns.length : '',
-      table_description: ta ? ta.description : '',
-      columns: ta.columns.col ? ta.columns.col : [],
-      columns_value: ta.columns
+      table_name: !_.isEmpty(ta) ? ta.name : '',
+      columns_number: !_.isEmpty(ta) ? ta.columns.length : '',
+      table_description: !_.isEmpty(ta) ? ta.description : '',
+      columns: !_.isEmpty(ta) ? ta.columns : [],
+      columns_value: !_.isEmpty(ta.columns)
         ? ta.columns.map(column => {
             return column.column_name;
           })
         : [],
-      columns_type: ta.columns
+      columns_type: !_.isEmpty(ta.columns)
         ? ta.columns.map(column => {
             return column.column_type;
           })
         : [],
-      is_generated: ta ? true : false,
+      is_generated: !_.isEmpty(ta) ? true : false,
     };
   },
 
   computed: {
+    ...mapGetters({
+      stringToKey: 'utils/stringToKey',
+    }),
     checkDisableValue() {
       if (this.is_editable) {
         return !this.is_editable;
@@ -151,9 +156,13 @@ export default {
     async generateColumns() {
       let columns = [];
       for (let i = 0; i < this.columns_number; i++) {
+        //sanitizing value from the form
+        this.$sanitize(this.columns_value[i], {});
+        this.$sanitize(this.columns_type[i], {});
+
         columns[i] = {
           column_name: this.columns_value[i],
-          column_key: this.columns_value[i].replace(/ /g, '_').toLowerCase(),
+          column_key: this.stringToKey(this.columns_value[i]),
           column_type: this.columns_type[i],
         };
       }
@@ -161,9 +170,9 @@ export default {
 
       const res = await this.$store.dispatch('INSERT_TABLE', {
         is_new: !this.is_editable,
-        id: this.table._id,
-        name: this.table_name,
-        description: this.table_description,
+        id: this.$sanitize(this.table._id),
+        name: this.$sanitize(this.table_name),
+        description: this.$sanitize(this.table_description),
         columns: columns,
       });
 
@@ -172,6 +181,7 @@ export default {
       });
 
       this.$nuxt.$loading.finish();
+      this.$router.push(`/edit-row/${res.table._id}`);
     },
 
     generateID(id, column_name) {

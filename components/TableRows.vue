@@ -12,10 +12,46 @@
           show-empty
         >
           <template v-for="col in fields" v-slot:[`cell(${col.key})`]="data">
-            <b-form-input v-model="data.item[col.key]" v-bind:key="col.key" />
+            <b-form-input
+              v-model="data.item[col.key]"
+              :type="inputType(col.type)"
+              v-bind:key="col.key"
+            />
+          </template>
+          <template v-slot:cell(actions)="data">
+            <b-button
+              size="sm"
+              @click="info(data.item, data.index, $event.target)"
+              class="mr-1 btn btn-danger"
+            >
+              Delete
+            </b-button>
+
+            <!-- Info modal -->
+            <b-modal
+              hide-footer
+              :id="infoModal.id"
+              :title="infoModal.title"
+              @hide="resetInfoModal"
+            >
+              <pre>{{ infoModal.content }}</pre>
+              <b-button
+                class="mt-3"
+                variant="outline-danger"
+                block
+                @click="deleteRow(data.index)"
+                >Delete</b-button
+              >
+              <b-button
+                class="mt-2"
+                variant="outline-warning"
+                block
+                @click="cancelClick"
+                >Cancel</b-button
+              >
+            </b-modal>
           </template>
         </b-table>
-        {{ row.rows }}
       </div>
       <hr />
       <div class="row">
@@ -23,12 +59,12 @@
           <div
             class="col form-control"
             v-for="col in table.columns"
-            v-bind:key="col.column_name"
+            v-bind:key="col.column_key"
           >
-            <label :for="col.column_name">{{ col.column_name }}</label>
+            <label :for="col.column_key">{{ col.column_name }}</label>
             <input
               :type="col.column_type === 'String' ? 'text' : 'number'"
-              v-model="current_row[col.column_name]"
+              v-model="current_row[col.column_key]"
             />
           </div>
           <div class="col">
@@ -53,31 +89,42 @@ export default {
 
   computed: mapGetters({
     r: 'rows/getRows',
+    sanitize: 'utils/sanitizeObj',
+    inputType: 'utils/inputType',
   }),
 
   data() {
     let x = {};
     let cols = [];
     let cRow = _.cloneDeep(this.$store.state.rows);
-    let cNewRow = [];
 
     this.table.columns.forEach((col, index) => {
-      x[col.column_name.replace(/ /g, '_').toLowerCase()] = null;
+      x[col.column_key] = null;
       cols[index] = {
-        key: col.column_name.replace(/ /g, '_').toLowerCase(),
+        key: col.column_key,
         label: col.column_name,
+        type: col.column_type,
         sortable: true,
       };
     });
+    cols[cols.length] = {
+      key: 'actions',
+      label: 'Actions',
+      type: 'btn',
+      sortable: false,
+    };
 
     if (!cRow.rows) {
       cRow.rows = { rows: [] };
     }
 
-    console.log(cRow);
     return {
-      sortBy: cols[0].label,
       sortDesc: false,
+      infoModal: {
+        id: 'info-modal',
+        title: 'Delete row',
+        content: '',
+      },
       current_row: x,
       fields: cols,
       row: cRow.rows,
@@ -86,29 +133,33 @@ export default {
 
   methods: {
     async addTable() {
-      this.$nuxt.$loading.start();
+      const aRow = this.row.rows;
 
-      const aRow = _.cloneDeep(this.row.rows);
-      aRow.push(this.current_row);
-
-      const res = await this.$store.dispatch('rows/INSERT_ROW', {
-        is_new: !this.row || this.row.length === 0,
-        tableId: this.table._id,
-        rowId: this.row._id || null,
-        rows: aRow,
-      });
-
-      this.$toast.show(res.message, {
-        duration: 2000,
-      });
+      const sanitize_current_row = this.sanitize(
+        this.current_row,
+        this.$sanitize
+      );
+      aRow.push(sanitize_current_row);
 
       this.table.columns.forEach(col => {
-        this.current_row[
-          col.column_name.replace(/ /g, '_').toLowerCase()
-        ] = null;
+        this.current_row[col.column_key] = null;
       });
-
-      this.$nuxt.$loading.finish();
+    },
+    info(item, index, button) {
+      this.infoModal.title = `Delete Row ${index}`;
+      this.infoModal.content = 'Do you really want to delete this row?';
+      this.$root.$emit('bv::show::modal', this.infoModal.id, button);
+    },
+    resetInfoModal() {
+      this.infoModal.title = '';
+      this.infoModal.content = '';
+    },
+    cancelClick() {
+      this.$root.$emit('bv::show::modal', this.infoModal.id);
+    },
+    deleteRow(index) {
+      this.$root.$emit('bv::show::modal', this.infoModal.id);
+      this.row.rows.splice(index, 1);
     },
   },
 
@@ -116,12 +167,16 @@ export default {
     // whenever row changes, this function will run
     row: {
       handler: _.debounce(async function(row) {
-        console.log('row vfvfv', row);
-        const res = await this.$store.dispatch('INSERT_ROW', {
+        let rows = [];
+        _.forEach(this.row.rows, row => {
+          rows.push(this.sanitize(row, this.$sanitize));
+        });
+        console.log(rows);
+        const res = await this.$store.dispatch('rows/INSERT_ROW', {
           is_new: !this.row || this.row.length === 0,
           tableId: this.table._id,
           rowId: this.row._id || null,
-          rows: this.row.rows,
+          rows: rows,
         });
 
         this.$toast.show(res.message, {

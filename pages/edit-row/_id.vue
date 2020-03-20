@@ -2,31 +2,23 @@
   <div class="container">
     <div class="row">
       <ul class="nav nav-tabs">
-        <li class="nav-item">
+        <li class="nav-item" v-on:click="switchTabs(true)">
           <nuxt-link
             :to="generateUrl('/edit')"
-            :class="{ active: true, 'nav-link': true }"
+            :class="{ active: false, 'nav-link': true }"
             >Edit the table</nuxt-link
           >
         </li>
-        <li class="nav-item">
+        <li class="nav-item" v-on:click="switchTabs(false)">
           <nuxt-link
             :to="generateUrl('/edit-row')"
-            :class="{ active: false, 'nav-link': true }"
+            :class="{ active: true, 'nav-link': true }"
             >Edit the rows</nuxt-link
           >
         </li>
       </ul>
     </div>
-    <div class="tabs" v-if="tabs_switch">
-      <h2>
-        Edit the Table definition
-      </h2>
-      <div class="content">
-        <Table v-bind:table="t" v-bind:is_editable="true"></Table>
-      </div>
-    </div>
-    <div class="tabs" v-else>
+    <div class="tabs">
       <h2>
         Edit the Table rows
       </h2>

@@ -18,6 +18,12 @@ export const getters = {
     });
     return ta;
   },
+  generateUrl: state => baseUrl => {
+    return `${baseUrl}/${state.tableId}`;
+  },
+  generateStaticUrl: state => (baseUrl, param) => {
+    return `${baseUrl}/${param}`;
+  },
 };
 
 export const mutations = {
@@ -39,7 +45,7 @@ export const actions = {
     }
 
     return new Promise((resolve, reject) => {
-      if (payload.status === 200) {
+      if (payload.status === 201) {
         resolve(payload.data);
       } else {
         reject(payload.message);
