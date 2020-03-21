@@ -45,7 +45,8 @@ export default {
   computed: mapGetters({
     table: 'getTable',
     rows: 'rows/getRows',
-    generateUrl: 'generateStaticUrl'
+    generateUrl: 'generateStaticUrl',
+    getRowByRandom: 'utils/getRowByRandom'
   }),
 
   data() {
@@ -62,35 +63,7 @@ export default {
 
   methods: {
     chooseRandomRow() {
-      let percentArray = [];
-      const weightArray = _.map(this.rows.rows, (row, index) => {
-        return { id: index, weigth: parseInt(row.weigth) };
-      });
-
-      const totalweigth = _(weightArray)
-        .map(row => {
-          return row.weigth;
-        })
-        .sum();
-
-      let cumulative_percentage = 0;
-      _.forEach(weightArray, (weight_row, index) => {
-        const percent = (weight_row.weigth / totalweigth) * 100;
-        percentArray[index] = [
-          cumulative_percentage,
-          cumulative_percentage + parseInt(percent)
-        ];
-        cumulative_percentage += parseInt(percent);
-      });
-
-      const seed = Math.round(Math.random() * 100);
-      let rowIndex = 0;
-      _.forEach(percentArray, (weight_row, index) => {
-        if (seed > weight_row[0] && seed < weight_row[1]) {
-          rowIndex = index;
-        }
-      });
-      this.result = this.rows.rows[rowIndex];
+      this.result = this.rows.rows[this.getRowByRandom(this.rows.rows)];
     }
   }
 };

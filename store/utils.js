@@ -37,4 +37,35 @@ export const getters = {
     }
     return returnType;
   },
+  getRowByRandom: state => rows => {
+    let percentArray = [];
+    const weightArray = _.map(rows, (row, index) => {
+      return { id: index, weigth: parseInt(row.weigth) };
+    });
+
+    const totalweigth = _(weightArray)
+      .map(row => {
+        return row.weigth;
+      })
+      .sum();
+
+    let cumulative_percentage = 0;
+    _.forEach(weightArray, (weight_row, index) => {
+      const percent = (weight_row.weigth / totalweigth) * 100;
+      percentArray[index] = [
+        cumulative_percentage,
+        cumulative_percentage + parseInt(percent)
+      ];
+      cumulative_percentage += parseInt(percent);
+    });
+
+    const seed = Math.round(Math.random() * 100);
+    let rowIndex = 0;
+    _.forEach(percentArray, (weight_row, index) => {
+      if (seed > weight_row[0] && seed < weight_row[1]) {
+        rowIndex = index;
+      }
+    });
+    return rowIndex;
+  }
 };

@@ -5,7 +5,7 @@ const baseUrl = process.env.BASE_API_URL;
 
 export const state = () => ({
   tables: [],
-  tableId: null,
+  tableId: null
 });
 
 export const getters = {
@@ -23,7 +23,7 @@ export const getters = {
   },
   generateStaticUrl: state => (baseUrl, param) => {
     return `${baseUrl}/${param}`;
-  },
+  }
 };
 
 export const mutations = {
@@ -32,7 +32,7 @@ export const mutations = {
   },
   setTable(state, data) {
     state.tableId = data._id;
-  },
+  }
 };
 
 export const actions = {
@@ -59,5 +59,5 @@ export const actions = {
   async LOAD_TABLE({ commit }, payload) {
     const { data } = await Axios.get(`${baseUrl}/tables/${payload.id}`);
     commit('setTable', data);
-  },
+  }
 };
