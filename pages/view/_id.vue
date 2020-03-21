@@ -13,7 +13,21 @@
           </button>
         </div>
       </div>
-      <div class="display-result">{{ result }}</div>
+      <div class="display-result">
+        <div class="row">
+          <div class="col" v-if="result">
+            <h2>Congratulations!! The result is,</h2>
+            <p>
+              <strong>{{ result["recipe's_name"] }}</strong>
+              <ul>
+                <li>
+                  {{result["ingredients"]}}
+                </li>
+              </ul>
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -25,18 +39,18 @@ import _ from 'lodash';
 
 export default {
   components: {
-    Logo,
+    Logo
   },
 
   computed: mapGetters({
     table: 'getTable',
     rows: 'rows/getRows',
-    generateUrl: 'generateStaticUrl',
+    generateUrl: 'generateStaticUrl'
   }),
 
   data() {
     return {
-      result: {},
+      result: null
     };
   },
 
@@ -64,7 +78,7 @@ export default {
         const percent = (weight_row.weigth / totalweigth) * 100;
         percentArray[index] = [
           cumulative_percentage,
-          cumulative_percentage + parseInt(percent),
+          cumulative_percentage + parseInt(percent)
         ];
         cumulative_percentage += parseInt(percent);
       });
@@ -77,8 +91,8 @@ export default {
         }
       });
       this.result = this.rows.rows[rowIndex];
-    },
-  },
+    }
+  }
 };
 </script>
 

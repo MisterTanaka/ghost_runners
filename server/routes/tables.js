@@ -10,7 +10,6 @@ router.get('/', async (req, res) => {
     const tables = await Table.find();
     res.json(tables);
   } catch (err) {
-    console.log(err.message);
     res.status(500).json({ message: err.message });
   }
 });
@@ -20,7 +19,7 @@ router.get('/:id', [
   getTable,
   (req, res) => {
     res.json(res.table);
-  },
+  }
 ]);
 
 // A route to create a random table
@@ -30,12 +29,12 @@ router.post('/', async (req, res) => {
   columns.unshift({
     column_key: 'weigth',
     column_name: 'Weigth',
-    column_type: 'number',
+    column_type: 'number'
   });
   const table = new Table({
     name: req.body.name,
     description: req.body.description,
-    columns: columns,
+    columns: columns
   });
 
   try {
@@ -46,10 +45,9 @@ router.post('/', async (req, res) => {
     res.status(201).json({
       table: newTable,
       status: 200,
-      message: 'The new table have been generated with success!',
+      message: 'The new table have been generated with success!'
     });
   } catch (err) {
-    console.log(err.message);
     res.status(400).json({ status: 500, message: err.message });
   }
 });
@@ -79,12 +77,12 @@ router.patch('/:id', [
       res.json({
         status: 200,
         updatedTable,
-        message: 'The table have been updated with success!',
+        message: 'The table have been updated with success!'
       });
     } catch {
       res.status(400).json({ status: 500, message: err.message });
     }
-  },
+  }
 ]);
 
 // A route to delete a random table
@@ -97,7 +95,7 @@ router.delete('/:id', [
     } catch (err) {
       res.status(500).json({ message: err.message });
     }
-  },
+  }
 ]);
 
 module.exports = router;

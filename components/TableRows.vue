@@ -90,7 +90,7 @@ export default {
   computed: mapGetters({
     r: 'rows/getRows',
     sanitize: 'utils/sanitizeObj',
-    inputType: 'utils/inputType',
+    inputType: 'utils/inputType'
   }),
 
   data() {
@@ -104,14 +104,14 @@ export default {
         key: col.column_key,
         label: col.column_name,
         type: col.column_type,
-        sortable: true,
+        sortable: true
       };
     });
     cols[cols.length] = {
       key: 'actions',
       label: 'Actions',
       type: 'btn',
-      sortable: false,
+      sortable: false
     };
 
     if (!cRow.rows) {
@@ -123,11 +123,12 @@ export default {
       infoModal: {
         id: 'info-modal',
         title: 'Delete row',
-        content: '',
+        content: ''
       },
       current_row: x,
       fields: cols,
       row: cRow.rows,
+      rowId: cRow._id
     };
   },
 
@@ -160,7 +161,7 @@ export default {
     deleteRow(index) {
       this.$root.$emit('bv::show::modal', this.infoModal.id);
       this.row.rows.splice(index, 1);
-    },
+    }
   },
 
   watch: {
@@ -171,21 +172,21 @@ export default {
         _.forEach(this.row.rows, row => {
           rows.push(this.sanitize(row, this.$sanitize));
         });
-        console.log(rows);
-        const res = await this.$store.dispatch('rows/INSERT_ROW', {
-          is_new: !this.row || this.row.length === 0,
+        const options = {
+          is_new: !this.row._id,
           tableId: this.table._id,
           rowId: this.row._id || null,
-          rows: rows,
-        });
+          rows: rows
+        };
+        const res = await this.$store.dispatch('rows/INSERT_ROW', options);
 
         this.$toast.show(res.message, {
-          duration: 2000,
+          duration: 2000
         });
       }, 500),
-      deep: true,
-    },
-  },
+      deep: true
+    }
+  }
 };
 </script>
 

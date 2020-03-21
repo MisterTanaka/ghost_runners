@@ -19,7 +19,7 @@ router.get('/', async (req, res) => {
 router.get('/tableId/:tableId', async (req, res) => {
   try {
     const rows = await Row.find({
-      table: req.params.tableId,
+      table: req.params.tableId
     });
     res.json(rows);
   } catch (err) {
@@ -32,22 +32,22 @@ router.get('/:id', [
   getRow,
   (req, res) => {
     res.json(res.row);
-  },
+  }
 ]);
 
 // A route to create a random row in a table
 router.post('/', async (req, res) => {
   const errors = checkRowValidation(req);
   let checkedRows = [];
-  _.forEach(req.body.rows, row => {
+  _.forEach(req.body.rows, (row, index) => {
     if (row.weigth < 0) {
       row.weigth = 0;
     }
-    checkedRows[row];
+    checkedRows[index] = row;
   });
   const row = new Row({
     table: mongoose.Types.ObjectId(req.body.tableId),
-    rows: checkedRows,
+    rows: checkedRows
   });
 
   try {
@@ -58,7 +58,7 @@ router.post('/', async (req, res) => {
     res.status(201).json({
       rows: newRow,
       status: 201,
-      message: 'The new row have been generated with success!',
+      message: 'The new row have been generated with success!'
     });
   } catch (err) {
     res.status(400).json({ status: 500, message: err.message });
@@ -70,8 +70,16 @@ router.patch('/:id', [
   async (req, res) => {
     const errors = checkRowValidation(req);
 
-    if (req.body.rows != null) {
-      res.row.rows = req.body.rows;
+    let checkedRows = [];
+    _.forEach(req.body.rows, (row, index) => {
+      if (row.weigth < 0) {
+        row.weigth = 0;
+      }
+      checkedRows[index] = row;
+    });
+
+    if (checkedRows != null) {
+      res.row.rows = checkedRows;
     }
 
     try {
@@ -80,14 +88,14 @@ router.patch('/:id', [
       }
       const updatedRow = await res.row.save();
       res.json({
-        status: 200,
+        status: 201,
         updatedRow,
-        message: 'The rows have been updated with success!',
+        message: 'The rows have been updated with success!'
       });
     } catch {
       res.status(400).json({ status: 500, message: err.message });
     }
-  },
+  }
 ]);
 
 module.exports = router;

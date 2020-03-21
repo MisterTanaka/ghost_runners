@@ -5,7 +5,7 @@ const baseUrl = process.env.BASE_API_URL;
 
 export const state = () => ({
   rows: [],
-  rowId: null,
+  rowId: null
 });
 
 export const getters = {
@@ -18,7 +18,7 @@ export const getters = {
       return r._id === state.rowId;
     });
     return row;
-  },
+  }
 };
 
 export const mutations = {
@@ -27,7 +27,7 @@ export const mutations = {
   },
   setRow(state, data) {
     state.rowId = data._id;
-  },
+  }
 };
 
 export const actions = {
@@ -41,7 +41,7 @@ export const actions = {
     commit('setRows', [rows.data.updatedRow]);
 
     return new Promise((resolve, reject) => {
-      if (rows.status === 200) {
+      if (rows.data.status === 201) {
         resolve(rows.data);
       } else {
         reject(rows.message);
@@ -57,5 +57,5 @@ export const actions = {
     }
     commit('setRows', rows.data);
     return;
-  },
+  }
 };
