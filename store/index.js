@@ -18,6 +18,13 @@ export const getters = {
     });
     return ta;
   },
+  getFilteredColumns(state) {
+    const ta = _.cloneDeep(getters.getTable(state));
+    _.remove(ta.columns, function(column) {
+      return column.column_key === 'weigth';
+    });
+    return ta.columns;
+  },
   generateUrl: state => baseUrl => {
     return `${baseUrl}/${state.tableId}`;
   },

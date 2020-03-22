@@ -2,7 +2,7 @@
   <div class="container">
     <div class="header-img">
       <!-- this will be an image with the title on it. -->
-      <h1>Random Table generator</h1>
+      <h1 @click="checkGetFilteredColumns()">Random Table generator</h1>
       <h2>{{ table.name }}</h2>
     </div>
     <div class="content">
@@ -11,6 +11,18 @@
           <button class="btn btn-success" @click="chooseRandomRow">
             Select a random choice for me
           </button>
+        </div>
+        <div class="row">
+          <div class="col">
+            <b-table
+          striped
+          hover
+          :fields="getFilteredColumns"
+          :items="r"
+          sort-icon-left
+          show-empty
+        ></b-table>
+          </div>
         </div>
       </div>
       <div class="display-result">
@@ -42,16 +54,30 @@ export default {
     Logo
   },
 
-  computed: mapGetters({
-    table: 'getTable',
-    rows: 'rows/getRows',
-    generateUrl: 'generateStaticUrl',
-    getRowByRandom: 'utils/getRowByRandom'
-  }),
+  computed: {
+    ...mapGetters({
+      table: 'getTable',
+      rows: 'rows/getRows',
+      generateUrl: 'generateStaticUrl',
+      getRowByRandom: 'utils/getRowByRandom',
+      getFilteredColumns: 'getFilteredColumns',
+    }),
+    r() {
+      return _.map(this.rows.rows, (row) => {
+        let cRow = {};
+        for (let [key, value] of Object.entries(row)) {
+          if(key !== 'weigth') {
+            cRow[key] = value;
+          }
+        }
+        return cRow; 
+      });
+    },
+  },
 
   data() {
     return {
-      result: null
+      result: null,
     };
   },
 
@@ -64,6 +90,9 @@ export default {
   methods: {
     chooseRandomRow() {
       this.result = this.rows.rows[this.getRowByRandom(this.rows.rows)];
+    },
+    checkGetFilteredColumns() {
+      console.log(this.r);
     }
   }
 };
