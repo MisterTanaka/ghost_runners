@@ -5,13 +5,13 @@
         <li class="nav-item">
           <nuxt-link
             :to="generateUrl('/edit')"
-            :class="{ active: true, 'nav-link': true }"
+            :class="{ active: false, 'nav-link': true }"
           >Edit the table</nuxt-link>
         </li>
         <li class="nav-item">
           <nuxt-link
             :to="generateUrl('/edit-meta')"
-            :class="{ active: false, 'nav-link': true }"
+            :class="{ active: true, 'nav-link': true }"
           >Edit the metas</nuxt-link>
         </li>
         <li class="nav-item">
@@ -23,9 +23,9 @@
       </ul>
     </div>
     <div class="tabs">
-      <h2>Edit the Table definition</h2>
+      <h2>Edit the Table metadata</h2>
       <div class="content">
-        <Table v-bind:table="t" v-bind:is_editable="true"></Table>
+        <table-meta></table-meta>
       </div>
     </div>
   </div>
@@ -33,13 +33,13 @@
 
 <script>
 import Table from '../../components/Table.vue';
-import TableRows from '../../components/TableRows.vue';
+import TableMeta from '../../components/TableMeta.vue';
 import { mapGetters } from 'vuex';
 
 export default {
   components: {
     Table,
-    TableRows
+    TableMeta
   },
 
   computed: mapGetters({
@@ -55,7 +55,7 @@ export default {
 
   data: () => {
     return {
-      tabs_switch: false
+      tabs_switch: 'metas'
     };
   },
 

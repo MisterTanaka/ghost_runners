@@ -2,26 +2,28 @@
   <div class="container">
     <div class="row">
       <ul class="nav nav-tabs">
-        <li class="nav-item" v-on:click="switchTabs(true)">
+        <li class="nav-item">
           <nuxt-link
             :to="generateUrl('/edit')"
             :class="{ active: false, 'nav-link': true }"
-            >Edit the table</nuxt-link
-          >
+          >Edit the table</nuxt-link>
         </li>
-        <li class="nav-item" v-on:click="switchTabs(false)">
+        <li class="nav-item">
+          <nuxt-link
+            :to="generateUrl('/edit-meta')"
+            :class="{ active: false, 'nav-link': true }"
+          >Edit the metas</nuxt-link>
+        </li>
+        <li class="nav-item">
           <nuxt-link
             :to="generateUrl('/edit-row')"
             :class="{ active: true, 'nav-link': true }"
-            >Edit the rows</nuxt-link
-          >
+          >Edit the rows</nuxt-link>
         </li>
       </ul>
     </div>
     <div class="tabs">
-      <h2>
-        Edit the Table rows
-      </h2>
+      <h2>Edit the Table rows</h2>
       <div class="content">
         <table-rows :table="t"></table-rows>
       </div>
@@ -37,12 +39,12 @@ import { mapGetters } from 'vuex';
 export default {
   components: {
     Table,
-    TableRows,
+    TableRows
   },
 
   computed: mapGetters({
     t: 'getTable',
-    generateUrl: 'generateUrl',
+    generateUrl: 'generateUrl'
   }),
 
   async fetch({ store, params }) {
@@ -53,21 +55,18 @@ export default {
 
   data: () => {
     return {
-      tabs_switch: true,
+      tabs_switch: 'rows'
     };
   },
 
   methods: {
-    switchTabs: function(value) {
-      this.tabs_switch = value;
-    },
     activeClass: function(active) {
       return {
         active: active,
-        'nav-link': true,
+        'nav-link': true
       };
-    },
-  },
+    }
+  }
 };
 </script>
 
