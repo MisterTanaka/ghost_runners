@@ -118,13 +118,13 @@ export default {
             return column.column_type;
           })
         : [],
-      is_generated: !_.isEmpty(ta) ? true : false,
+      is_generated: !_.isEmpty(ta) ? true : false
     };
   },
 
   computed: {
     ...mapGetters({
-      stringToKey: 'utils/stringToKey',
+      stringToKey: 'utils/stringToKey'
     }),
     checkDisableValue() {
       if (this.is_editable) {
@@ -141,7 +141,7 @@ export default {
         this.columns = this.columns.splice(0, this.columns.length - 1);
       }
       return this.columns;
-    },
+    }
   },
 
   methods: {
@@ -163,7 +163,7 @@ export default {
         columns[i] = {
           column_name: this.columns_value[i],
           column_key: this.stringToKey(this.columns_value[i]),
-          column_type: this.columns_type[i],
+          column_type: this.columns_type[i]
         };
       }
       this.$nuxt.$loading.start();
@@ -173,11 +173,11 @@ export default {
         id: this.$sanitize(this.table._id),
         name: this.$sanitize(this.table_name),
         description: this.$sanitize(this.table_description),
-        columns: columns,
+        columns: columns
       });
 
       this.$toast.show(res.message, {
-        duration: 2000,
+        duration: 2000
       });
 
       this.$nuxt.$loading.finish();
@@ -190,8 +190,8 @@ export default {
 
     oddClass(n) {
       return ['2-md', n % 2 == 0 ? 'oddInput' : ''];
-    },
-  },
+    }
+  }
 };
 </script>
 

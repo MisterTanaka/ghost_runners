@@ -59,6 +59,25 @@ export const actions = {
       }
     });
   },
+  async INSERT_TAG({ commit }, payload) {
+    let tags = await Axios.post(`${baseUrl}/tags/bulk`, payload);
+
+    let setTableTags = await Axios.patch(
+      `${baseUrl}/tables/tags/${payload.table._id}`,
+      {
+        table: payload.table,
+        tags: tags.data.tag
+      }
+    );
+
+    return new Promise((resolve, reject) => {
+      if (setTableTags.data.status === 201) {
+        resolve(setTableTags.data);
+      } else {
+        reject(setTableTags.message);
+      }
+    });
+  },
   async LOAD_TABLES({ commit }) {
     const { data } = await Axios.get(`${baseUrl}/tables`);
     commit('setTables', data);

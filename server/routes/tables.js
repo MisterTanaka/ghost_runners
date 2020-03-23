@@ -3,6 +3,8 @@ const router = express.Router();
 const Table = require('../models/table');
 const { getTable } = require('../middlewares/routeMiddleware');
 const { checkTableValidation } = require('../validation/tableValidation');
+const _ = require('lodash');
+const mongoose = require('mongoose');
 
 // A route to get all random table generate.
 router.get('/', async (req, res) => {
@@ -76,6 +78,46 @@ router.patch('/:id', [
       const updatedTable = await res.table.save();
       res.json({
         status: 200,
+        updatedTable,
+        message: 'The table have been updated with success!'
+      });
+    } catch {
+      res.status(400).json({ status: 500, message: err.message });
+    }
+  }
+]);
+
+router.patch('/tags/:id', [
+  getTable,
+  async (req, res) => {
+    const errors = checkTableValidation(req);
+
+    if (req.body.table.name != null) {
+      res.table.name = req.body.table.name;
+    }
+
+    if (req.body.table.description != null) {
+      res.table.description = req.body.table.description;
+    }
+
+    if (req.body.table.columns != null) {
+      res.table.columns = req.body.table.columns;
+    }
+
+    if (req.body.tags != null) {
+      const _idArray = _.map(req.body.tags, tag => {
+        return { _id: mongoose.Types.ObjectId(tag._id) };
+      });
+      res.table.categories = _idArray;
+    }
+
+    try {
+      if (!errors.isEmpty()) {
+        throw new Error(errors.array());
+      }
+      const updatedTable = await res.table.save();
+      res.json({
+        status: 201,
         updatedTable,
         message: 'The table have been updated with success!'
       });

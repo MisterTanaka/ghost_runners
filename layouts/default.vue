@@ -8,13 +8,13 @@
 </template>
 
 <script>
-import NavBar from '~/components/shared/NavBar.vue'
+import NavBar from '~/components/shared/NavBar.vue';
 
 export default {
   components: {
     NavBar
   }
-}
+};
 </script>
 
 <style>
@@ -114,14 +114,14 @@ small {
   width: auto;
   padding: 0 7px;
   margin: 0 5px;
-  background: transparent;
+  /*background: transparent;*/
   border-radius: 13px;
   font-size: 13px;
   font-weight: 400;
   line-height: 26px;
 }
 .badge.-fill-gradient {
-  background: linear-gradient(to right, #16c0b0, #84cf6a);
+  /*background: linear-gradient(to right, #16c0b0, #84cf6a);*/
   color: #fff;
 }
 button,

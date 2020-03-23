@@ -63,7 +63,8 @@ export default {
       getFilteredColumns: 'getFilteredColumns',
     }),
     r() {
-      return _.map(this.rows.rows, (row) => {
+      if(this.rows) {
+        return _.map(this.rows.rows, (row) => {
         let cRow = {};
         for (let [key, value] of Object.entries(row)) {
           if(key !== 'weigth') {
@@ -72,6 +73,9 @@ export default {
         }
         return cRow; 
       });
+      } else {
+        return [];
+      }
     },
   },
 

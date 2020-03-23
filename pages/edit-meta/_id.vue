@@ -6,26 +6,29 @@
           <nuxt-link
             :to="generateUrl('/edit')"
             :class="{ active: false, 'nav-link': true }"
-          >Edit the table</nuxt-link>
+            >Edit the table</nuxt-link
+          >
         </li>
         <li class="nav-item">
           <nuxt-link
             :to="generateUrl('/edit-meta')"
             :class="{ active: true, 'nav-link': true }"
-          >Edit the metas</nuxt-link>
+            >Edit the metas</nuxt-link
+          >
         </li>
         <li class="nav-item">
           <nuxt-link
             :to="generateUrl('/edit-row')"
             :class="{ active: false, 'nav-link': true }"
-          >Edit the rows</nuxt-link>
+            >Edit the rows</nuxt-link
+          >
         </li>
       </ul>
     </div>
     <div class="tabs">
       <h2>Edit the Table metadata</h2>
       <div class="content">
-        <table-meta></table-meta>
+        <table-meta :ta="t"></table-meta>
       </div>
     </div>
   </div>
@@ -50,6 +53,7 @@ export default {
   async fetch({ store, params }) {
     await store.dispatch('LOAD_TABLES');
     await store.dispatch('rows/LOAD_ROWS', { tableId: params.id });
+    await store.dispatch('tags/LOAD_TAGS');
     await store.dispatch('LOAD_TABLE', { id: params.id });
   },
 

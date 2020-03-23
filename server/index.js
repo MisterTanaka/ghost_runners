@@ -31,6 +31,9 @@ async function start() {
   const rowRoutes = require('./routes/rows');
   app.use('/api/rows', rowRoutes);
 
+  const tagRoutes = require('./routes/tags');
+  app.use('/api/tags', tagRoutes);
+
   await nuxt.ready();
   // Build only in dev mode
   if (config.dev) {
@@ -45,7 +48,7 @@ async function start() {
   app.listen(port, host);
   consola.ready({
     message: `Server listening on http://${host}:${port}`,
-    badge: true,
+    badge: true
   });
 }
 start();

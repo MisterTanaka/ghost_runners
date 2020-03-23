@@ -3,7 +3,8 @@
     <nuxt-link to="/" class="brand">Table Generator</nuxt-link>
     <nav>
       <nuxt-link to="/">List</nuxt-link>&nbsp;|
-      <nuxt-link to="/create">Create</nuxt-link>
+      <nuxt-link to="/create">Create</nuxt-link> |
+      <nuxt-link to="/tags">Tags</nuxt-link>
     </nav>
   </div>
 </template>

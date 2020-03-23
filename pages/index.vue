@@ -11,23 +11,21 @@
         </p>
         <div class="right">
           <ul>
-            <li><nuxt-link
-              :to="generateUrl('/view', table._id)"
-              class="btn btn-primary"
-              >View</nuxt-link
-            >
+            <li>
+              <nuxt-link
+                :to="generateUrl('/view', table._id)"
+                class="btn btn-primary"
+                >View</nuxt-link
+              >
             </li>
             <li>
               <nuxt-link
-              :to="generateUrl('/edit', table._id)"
-              class="btn btn-success"
-              >Edit</nuxt-link
-            >
+                :to="generateUrl('/edit', table._id)"
+                class="btn btn-success"
+                >Edit</nuxt-link
+              >
             </li>
           </ul>
-            
-            
-          </div>
         </div>
       </div>
     </div>
@@ -40,19 +38,19 @@ import { mapGetters } from 'vuex';
 
 export default {
   components: {
-    Logo,
+    Logo
   },
 
   computed: mapGetters({
     tables: 'getTables',
-    generateUrl: 'generateStaticUrl',
+    generateUrl: 'generateStaticUrl'
   }),
 
   async fetch({ store, params }) {
     await store.dispatch('LOAD_TABLES');
   },
 
-  methods: {},
+  methods: {}
 };
 </script>
 
@@ -81,7 +79,7 @@ export default {
 
 .right {
   display: block;
-  float:right;
+  float: right;
 }
 
 .right ul li {
